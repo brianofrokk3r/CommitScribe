@@ -1,6 +1,7 @@
 const { Command }   = require('commander');
 const { execSync } = require('child_process');
 const { Configuration, OpenAIApi } = require("openai");
+require('dotenv').config()
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -11,12 +12,12 @@ const program   = new Command();
 
 function getGitLogs(since) {
     const gitLogs = execSync(`git log --since="${since}" --pretty=format:"%s"`)
-      .toString()
-      .trim()
-      .split('\n');
+        .toString()
+        .trim()
+        .split('\n');
     return gitLogs;
-  }
-  
+}
+
 async function processGitLogs() {
     const gitLogDaily = getGitLogs('1 day ago');
     const gitLogWeekly = getGitLogs('1 week ago');
@@ -26,23 +27,41 @@ async function processGitLogs() {
     const tags = {};
 
     for (const message of gitLogDaily) {
+        console.log(`daily`, message)
         dailyActivities.push(await generateCommitSummary(message));
     }
 
     for (const message of gitLogWeekly) {
+        console.log(`weekly`, message)
         weeklySummaries.push(await generateCommitSummary(message));
-
-        const tag = await classifyCommit(message);
-        if (!tags[tag]) {
-        tags[tag] = [];
-        }
-        tags[tag].push(message);
     }
+
+    return {
+        dailyActivities,
+        weeklySummaries,
+    };
 }
   
-async function updateChangelog(tags) {
+async function updateChangelog(log) {
     console.log('Updating changelog...');
     console.log(log)
+    return log
+}
+
+async function generateCommitSummary(log) {
+    const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: "With the following text, generate a breakdown of the commit message, separate into feature, bug, refactor, chore, etc... (use best practice): " + log
+    });
+    return completion.data.choices[0].text
+    // ...
+}
+
+async function classifyCommit(log) {
+    console.log('Updating classifyCommit...');
+    console.log(log)
+    return log
+    // ...
 }
 
 (async () => {
