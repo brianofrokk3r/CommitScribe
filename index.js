@@ -3,7 +3,16 @@ const { execSync } = require('child_process');
 const axios = require('axios');
 const fs = require('fs');
 const { Configuration, OpenAIApi } = require("openai");
-require('dotenv').config()
+
+// Load config file
+const dotenv = require('dotenv');
+dotenv.config({ path: '.getconfig' });
+
+// Check for API key
+if(!process.env.OPENAI_API_KEY) {
+    console.error('No OpenAI API Key found. Please run `get config -k <key>` to set your API key.');
+    process.exit(1);
+}
 
 function getNodeVersion() {
     const packageJson = fs.readFileSync('./package.json');
@@ -12,7 +21,6 @@ function getNodeVersion() {
 }
 
 const configuration = new Configuration({
-    organization: process.env.OPENAI_ORG_ID,
     apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -20,7 +28,7 @@ const openai    = new OpenAIApi(configuration);
 const program   = new Command();
 
 function getGitLogs(since) {
-    const gitLogs = execSync(`git log --since="${since}" --pretty=format:"%s"`)
+    const gitLogs = execSync(`git log --after="${since}" --pretty=format:"%s"`)
         .toString()
         .trim()
         .split('\n');
@@ -29,7 +37,7 @@ function getGitLogs(since) {
 
 /** TODO: Get changelog between two branches since last merge */
 function getSinceLastMerge(from = 'dev', to = 'main') {
-    const lastMerge = execSync(`git log --first-parent ${to}..${from} --pretty=format:"%s"`)
+    const lastMerge = execSync(`git log --first-parent ${to}..${from} --pretty=format:"%s"`) //--pretty=format:"%s"
         .toString()
         .trim()
         .split('\n');
@@ -53,6 +61,8 @@ async function processWeeklyLog() {
 }
 
 async function generateCommitSummary(log) {
+
+    console.log(log);
     
     let fullPrompt = `System: 
 
@@ -68,7 +78,7 @@ async function generateCommitSummary(log) {
     const completion = await axios.post('https://api.openai.com/v1/chat/completions', {
         model: "gpt-3.5-turbo",
         messages: [{role: "user", "content": fullPrompt}],
-        temperature: 0,
+        temperature: 0.1,
     }, {
         headers: {
             'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -77,11 +87,29 @@ async function generateCommitSummary(log) {
     return completion
 }
 
-
 program
 .name('get')
 .description('Generate a changelog from git logs')
 .version(getNodeVersion());
+
+program.command('config')
+    .option('-k, --key <key>', 'API Key')
+    .action((str, options) => {
+        console.log('Writing config file...', str);
+        const config = {
+            OPENAI_API_KEY: str.key,
+        };
+        
+        const data = Object.entries(config).map(([key, value]) => `${key}=${value}`).join('\n');
+        
+        fs.writeFile('.getconfig', data, err => {
+        if (err) {
+            console.error('Error writing config file:', err);
+            return;
+        }
+        console.log('Config file written successfully.');
+        });
+    });
 
 program.command('week')
 .description('Generate a changelog for the week')
@@ -91,25 +119,9 @@ program.command('week')
         const summary = commitSummary.data.choices[0].message.content;
         console.log(summary);
     } catch (error) {
-        const errorText = error.message
-            .match(/.{1,50}/g)
-            .join('\n│ '.padEnd(49));
-
         const stackTrace = error.stack;
-        
-        const errorMessage = `
-╭──────────────────────────────────────────────────────╮
-│                                                      │
-│                 An error occurred!                   │
-│                                                      │
-│──────────────────────────────────────────────────────│
-│                                                      │
-│ ${errorText.padEnd(50)}   │
-│                                                      │        
-╰──────────────────────────────────────────────────────╯
-
-${stackTrace}`;
-        console.error(errorMessage);
+        const errorMessage = error.message;
+        console.error(errorMessage, stackTrace);
     }    
 });
 
