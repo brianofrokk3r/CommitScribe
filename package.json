@@ -7,7 +7,6 @@
     "cs": "./build/index.js"
   },
   "types": "index.d.ts",
-  "package-name": "commitscribe",
   "repository": "brianofrokk3r/commitscribe",
   "keywords": [
     "git",
@@ -20,7 +19,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "start": "npx ts-node ./src/index.ts",
+    "start": "node build/index.js",
     "prepublish": "tsc"
   },
   "author": "Brian Sanchez <brian@rokk3r.com> (https://www.rokk3r.com)",
