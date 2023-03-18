@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "Translate git logs into Release Notes / Changelog",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "start": "npx ts-node ./src/index.ts"
+    "start": "npx ts-node ./src/index.ts",
+    "prepublish": "tsc"
   },
   "author": "Brian Sanchez <brian@rokk3r.com> (https://www.rokk3r.com)",
   "license": "MIT",
