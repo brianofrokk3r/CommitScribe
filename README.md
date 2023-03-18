@@ -17,7 +17,7 @@ cs config -k <key>
 
 Then, to generate a changelog for the week, run:
 ```sh
-cl weekly
+cs weekly
 ```
 
 # Output

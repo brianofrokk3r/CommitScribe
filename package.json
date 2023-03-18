@@ -2,7 +2,10 @@
   "name": "commitscribe",
   "version": "1.0.1",
   "description": "Translate git logs into Release Notes / Changelog",
-  "main": "index.js",
+  "main": "build/index.js",
+  "bin": {
+    "cs": "./build/index.js"
+  },
   "types": "index.d.ts",
   "package-name": "commitscribe",
   "repository": "brianofrokk3r/commitscribe",
