@@ -17,9 +17,12 @@
     "scribe"
   ],
   "scripts": {
+    "watch": "npm run -S build -- --sourcemap --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "start": "node build/index.js",
+    "start": "node ./build/index.js",
+    "dev": "npx ts-node ./src/index.ts",
+    "deploy": "npm run build && npm version patch && npm publish --tag latest",
     "prepublish": "tsc"
   },
   "author": "Brian Sanchez <brian@rokk3r.com> (https://www.rokk3r.com)",
