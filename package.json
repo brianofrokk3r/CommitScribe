@@ -1,6 +1,6 @@
 {
   "name": "commitscribe",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "Translate git logs into Release Notes / Changelog",
   "main": "build/index.js",
   "bin": {
