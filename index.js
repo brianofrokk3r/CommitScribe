@@ -88,7 +88,7 @@ async function generateCommitSummary(log) {
 }
 
 program
-.name('get')
+.name('cl')
 .description('Generate a changelog from git logs')
 .version(getNodeVersion());
 
