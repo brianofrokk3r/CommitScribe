@@ -2,7 +2,7 @@ import axios from 'axios';
 import { OPENAI_API_KEY } from './config';
 
 export async function generateCommitSummary(log: string) {
-    let fullPrompt = `System: 
+  let fullPrompt = `System: 
 
     Give me a set of lists broken into feature, fix, chore, refactor, etc... Use emojis like stars emoji for feature, the caterpillar for fix, and the package for chore. Format each item into a new line to make it more readable result. Append after each Section title the % of items in that section. If there's nothing in a section don't put it in the result.
     

@@ -30,5 +30,11 @@ To generate a changelog between branches, run:
 cl between <base branch> <head branch>
 ```
 
+# Development
+- [ ] Pipe output to CHANGELOG.md
+- [ ] Limit number of commits to specific token size
+- [ ] Options for "User-Friendly" or "Technical" outputs
+- [ ] Summary since last merge from base branch to head branch
+
 # License
 This project is licensed under the MIT License.
