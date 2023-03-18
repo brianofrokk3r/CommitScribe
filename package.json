@@ -1,9 +1,19 @@
 {
-  "name": "CommitScribe",
+  "name": "commitscribe",
   "version": "1.0.1",
   "description": "Translate git logs into Release Notes / Changelog",
   "main": "index.js",
   "types": "index.d.ts",
+  "package-name": "commitscribe",
+  "repository": "brianofrokk3r/commitscribe",
+  "keywords": [
+    "git",
+    "changelog",
+    "release",
+    "notes",
+    "commit",
+    "scribe"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
