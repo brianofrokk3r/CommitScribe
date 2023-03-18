@@ -12,7 +12,7 @@ npm install -g commitscribe
 To use the script, first set your OpenAI API key by running the following command:
 
 ```sh
-cl config -k <key>
+cs config -k <key>
 ```
 
 Then, to generate a changelog for the week, run:
@@ -66,7 +66,7 @@ The script will output a changelog in the following format:
 - [ ] Chore: Limit number of commits to specific token size
 - [ ] Feature: Pipe output to CHANGELOG.md
 - [ ] Feature: Options for "User-Friendly" or "Technical" outputs
-- [ ] Feature: Summary since last merge from base branch to head branch (`cl between <base branch> <head branch>`)
+- [ ] Feature: Summary since last merge from base branch to head branch (`cs between <base branch> <head branch>`)
 
 # License
 This project is licensed under the MIT License.
