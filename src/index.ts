@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import { getGitLogs } from './git';
 import { generateCommitSummary } from './openai';
 import { getNodeVersion } from './utils';
+import { homedir } from 'os';
 import fs from 'fs';
 
 
@@ -38,7 +39,7 @@ program.command('config')
 
     const data = Object.entries(config).map(([key, value]) => `${key}=${value}`).join('\n');
 
-    fs.writeFile('.getconfig', data, err => {
+    fs.writeFile(homedir() + '/.getconfig', data, err => {
       if (err) {
         console.error('Error writing config file:', err);
         return;
