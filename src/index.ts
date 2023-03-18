@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Command } from 'commander';
 import { getGitLogs } from './git';
 import { generateCommitSummary } from './openai';
