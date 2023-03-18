@@ -1,10 +1,19 @@
 const { Command }   = require('commander');
 const { execSync } = require('child_process');
+const axios = require('axios');
+const fs = require('fs');
 const { Configuration, OpenAIApi } = require("openai");
 require('dotenv').config()
 
+function getNodeVersion() {
+    const packageJson = fs.readFileSync('./package.json');
+    const { version } = JSON.parse(packageJson);
+    return version;
+}
+
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+    organization: process.env.OPENAI_ORG_ID,
+    apiKey: process.env.OPENAI_API_KEY,
 });
 
 const openai    = new OpenAIApi(configuration);
@@ -18,56 +27,90 @@ function getGitLogs(since) {
     return gitLogs;
 }
 
-async function processGitLogs() {
-    const gitLogDaily = getGitLogs('1 day ago');
+/** TODO: Get changelog between two branches since last merge */
+function getSinceLastMerge(from = 'dev', to = 'main') {
+    const lastMerge = execSync(`git log --first-parent ${to}..${from} --pretty=format:"%s"`)
+        .toString()
+        .trim()
+        .split('\n');
+    return lastMerge;
+}
+
+async function processWeeklyLog() {
     const gitLogWeekly = getGitLogs('1 week ago');
 
-    const dailyActivities = [];
     const weeklySummaries = [];
-    const tags = {};
-
-    for (const message of gitLogDaily) {
-        console.log(`daily`, message)
-        dailyActivities.push(await generateCommitSummary(message));
-    }
 
     for (const message of gitLogWeekly) {
-        console.log(`weekly`, message)
-        weeklySummaries.push(await generateCommitSummary(message));
+        weeklySummaries.push(message);
     }
 
+    const commitSummary = await generateCommitSummary(weeklySummaries.join('\n'));
+    
     return {
-        dailyActivities,
-        weeklySummaries,
+        commitSummary,
     };
-}
-  
-async function updateChangelog(log) {
-    console.log('Updating changelog...');
-    console.log(log)
-    return log
 }
 
 async function generateCommitSummary(log) {
-    const completion = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: "With the following text, generate a breakdown of the commit message, separate into feature, bug, refactor, chore, etc... (use best practice): " + log
+    
+    let fullPrompt = `System: 
+
+    Give me a set of lists broken into feature, fix, chore, refactor, etc... Use emojis like stars emoji for feature, the caterpillar for fix, and the package for chore. Format each item into a new line to make it more readable result. Append after each Section title the % of items in that section. If there's nothing in a section don't put it in the result.
+    
+    The format I would like is...
+    
+    emoji Feature (20%):
+    - Feature 1 description
+    - Feature 2 description
+    - etc...` + '\n\n-----\n\n' + log;
+
+    const completion = await axios.post('https://api.openai.com/v1/chat/completions', {
+        model: "gpt-3.5-turbo",
+        messages: [{role: "user", "content": fullPrompt}],
+        temperature: 0,
+    }, {
+        headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        }
     });
-    return completion.data.choices[0].text
-    // ...
+    return completion
 }
 
-async function classifyCommit(log) {
-    console.log('Updating classifyCommit...');
-    console.log(log)
-    return log
-    // ...
-}
 
-(async () => {
-    const { dailyActivities, weeklySummaries, tags } = await processGitLogs();
-    console.log('Daily Activities:', dailyActivities);
-    console.log('Weekly Summaries:', weeklySummaries);
-    console.log('Tags:', tags);
-    await updateChangelog(tags);
-})();
+program
+.name('get')
+.description('Generate a changelog from git logs')
+.version(getNodeVersion());
+
+program.command('week')
+.description('Generate a changelog for the week')
+.action(async (str, options) => {
+    try {
+        const { commitSummary } = await processWeeklyLog();
+        const summary = commitSummary.data.choices[0].message.content;
+        console.log(summary);
+    } catch (error) {
+        const errorText = error.message
+            .match(/.{1,50}/g)
+            .join('\n│ '.padEnd(49));
+
+        const stackTrace = error.stack;
+        
+        const errorMessage = `
+╭──────────────────────────────────────────────────────╮
+│                                                      │
+│                 An error occurred!                   │
+│                                                      │
+│──────────────────────────────────────────────────────│
+│                                                      │
+│ ${errorText.padEnd(50)}   │
+│                                                      │        
+╰──────────────────────────────────────────────────────╯
+
+${stackTrace}`;
+        console.error(errorMessage);
+    }    
+});
+
+program.parse();
