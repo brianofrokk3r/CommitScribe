@@ -1,7 +1,7 @@
 {
   "name": "CommitScribe",
   "version": "1.0.0",
-  "description": "",
+  "description": "Translate git logs into Release Notes / Changelog",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

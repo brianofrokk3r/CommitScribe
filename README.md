@@ -17,24 +17,16 @@ cl config -k <key>
 
 Then, to generate a changelog for the week, run:
 ```sh
-cl week
-```
-
-The output will be printed to the console. To save the output to a file, run:
-```sh
-cl week -o <output file>
-```
-
-To generate a changelog between branches, run:
-```sh
-cl between <base branch> <head branch>
+cl weekly
 ```
 
 # Development
-- [ ] Pipe output to CHANGELOG.md
-- [ ] Limit number of commits to specific token size
-- [ ] Options for "User-Friendly" or "Technical" outputs
-- [ ] Summary since last merge from base branch to head branch
+- [ ] Test: Add tests
+- [ ] Test: Validate date logic in `getGitLogs`
+- [ ] Chore: Limit number of commits to specific token size
+- [ ] Feature: Pipe output to CHANGELOG.md
+- [ ] Feature: Options for "User-Friendly" or "Technical" outputs
+- [ ] Feature: Summary since last merge from base branch to head branch (`cl between <base branch> <head branch>`)
 
 # License
 This project is licensed under the MIT License.
