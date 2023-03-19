@@ -1,4 +1,4 @@
 .env
 .getconfig
-package-lock.json
 build
+node_modules
