@@ -30,7 +30,7 @@ jobs:
       run: npm ci
 
     - name: Bump package version (patch)
-      run: 
+      run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
         npm version patch
