@@ -22,6 +22,11 @@ Then, to generate a changelog for the week, run:
 cs weekly
 ```
 
+Then, to generate a changelog between two branches, run:
+```sh
+cs between dev main
+```
+
 # Output
 The script will output a changelog in the following format:
 ```md

@@ -17,7 +17,7 @@ async function processWeeklyLog(): Promise<{ commitSummary: any }> {
     weeklySummaries.push(message);
   }
 
-  const commitSummary = await generateCommitSummary(weeklySummaries.join('\n'));
+  const commitSummary = await generateCommitSummary(weeklySummaries.join('\n'), 'weekly');
 
   return {
     commitSummary,
@@ -32,7 +32,7 @@ async function processGitLog(from: string, to: string): Promise<{ commitSummary:
     summaries.push(message);
   }
 
-  const commitSummary = await generateCommitSummary(summaries.join('\n'));
+  const commitSummary = await generateCommitSummary(summaries.join('\n'), 'between');
 
   return {
     commitSummary,
