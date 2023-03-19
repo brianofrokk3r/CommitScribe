@@ -39,3 +39,5 @@ jobs:
         git add package.json
         git commit -m "Bump package version (patch)"
         git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
