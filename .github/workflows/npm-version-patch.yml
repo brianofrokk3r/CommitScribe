@@ -3,7 +3,7 @@ name: NPM Version Patch
 on:
   push:
     branches:
-      - release
+      - dev
 
 jobs:
   update-version:
@@ -38,6 +38,7 @@ jobs:
         git config user.email "actions@github.com"
         git add package.json
         git commit -m "Bump package version (patch)"
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
