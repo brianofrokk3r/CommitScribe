@@ -8,7 +8,7 @@ export function getGitLogs(since: string) {
   return gitLogs;
 }
 
-export function getSinceLastMerge(from = 'dev', to = 'main') {
+export function getSinceLastMerge(from: string = 'dev', to: string = 'main') {
   const lastMerge = execSync(`git log --first-parent ${to}..${from} --pretty=format:"%s"`)
     .toString()
     .trim()
