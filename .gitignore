@@ -1,3 +1,4 @@
 .env
 .getconfig
 build
+node_modules

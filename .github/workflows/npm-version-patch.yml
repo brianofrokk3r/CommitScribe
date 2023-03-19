@@ -5,10 +5,6 @@ on:
     branches:
       - dev
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   update-version:
     runs-on: ubuntu-latest
@@ -36,21 +32,13 @@ jobs:
     - name: Bump package version (patch)
       run: npm version patch --no-git-tag-version
 
-    - name: Commit and push to a new branch
+    - name: Commit and push updated package.json
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        git checkout -b patch-bump-${{ github.run_id }}
         git add package.json
         git commit -m "Bump package version (patch)"
         git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-        git push -u origin patch-bump-${{ github.run_id }}
-
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        title: "Bump package version (patch)"
-        base: dev
-        branch: patch-bump-${{ github.run_id }}
-        body: "This PR bumps the package version (patch) and should be merged back into the `dev` branch."
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
