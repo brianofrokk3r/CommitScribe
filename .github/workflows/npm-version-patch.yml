@@ -30,7 +30,7 @@ jobs:
       run: npm ci
 
     - name: Bump package version (patch)
-      run: npm version patch --no-git-tag-version
+      run: npm version patch
 
     - name: Commit and push updated package.json
       run: |
@@ -39,6 +39,6 @@ jobs:
         git add package.json
         git commit -m "Bump package version (patch)"
         git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-        git push
+        git push --tags
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
