@@ -36,8 +36,7 @@ jobs:
         npm version patch
         git add package.json
         git commit -m "Bump package version (patch)"
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-        git push --tags
+        git push --tags        
         
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
