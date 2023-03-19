@@ -1,6 +1,8 @@
 # CommitScribe
 An npm package for generating a changelog from git logs. The script retrieves git logs for the past week, processes the logs, and generates a changelog using GPT-3.
 
+<a href="https://www.npmjs.com/package/commitscribe"><img src="https://img.shields.io/npm/v/commitscribe" alt="Current version"></a>
+
 # Installation
 To install the script, run the following command:
 
@@ -18,6 +20,11 @@ cs config -k <key>
 Then, to generate a changelog for the week, run:
 ```sh
 cs weekly
+```
+
+Then, to generate a changelog between two branches, run:
+```sh
+cs between dev main
 ```
 
 # Output
@@ -62,6 +69,7 @@ The script will output a changelog in the following format:
 
 # Development
 - [ ] Test: Add tests
+- [ ] Test: Resolve prompt to handle certain cases
 - [ ] Test: Validate date logic in `getGitLogs`
 - [ ] Chore: Limit number of commits to specific token size
 - [ ] Feature: Pipe output to CHANGELOG.md
